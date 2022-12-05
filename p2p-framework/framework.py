@@ -3,7 +3,7 @@ import struct
 import threading
 import time
 import traceback
-import PeerConnection
+from PeerConnection import *
 import debug
 
 
@@ -11,7 +11,7 @@ class Peer:
     """A peer in the network"""
 
     def __init__(self, maxPeers, serverPort, myid=None, serverHost=None):
-        self.debug = 0
+        self.debug = False
 
         self.maxPeers = int(maxPeers)
         self.serverPort = int(serverPort)
@@ -68,7 +68,7 @@ class Peer:
         host, port = clientSock.getpeername()
         self.__debug('Connected' + str(host) + str(port))
 
-        peerConn = PeerConnection.PeerConnection(
+        peerConn = PeerConnection(
             None, host, port, clientSock, debug=False)
 
         try:
@@ -209,7 +209,7 @@ class Peer:
         msgResponse = []
 
         try:
-            peerConn = PeerConnection.PeerConnection(
+            peerConn = PeerConnection(
                 pid, host, port, debug=self.debug)
             peerConn.sendData(msgType, msgData)
             self.__debug(f'Sent {pid}: {msgType}')
@@ -236,11 +236,11 @@ class Peer:
 
         for pid in self.peers:
             isConnected = False
-
+            peerConn = None
             try:
                 self.__debug(f'Checking peer: {pid}')
                 host, port = self.peers[pid]
-                peerConn = PeerConnection.PeerConnection(
+                peerConn = PeerConnection(
                     pid, host, port, debug=self.debug)
                 peerConn.sendData('PING', '')
                 isConnected = True

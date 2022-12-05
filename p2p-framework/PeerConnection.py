@@ -17,6 +17,7 @@ class PeerConnection:
             self.s = sock
 
         self.sd = self.s.makefile('rw', 0)
+        #self.sd = self.s.makefile('rwb', 0)
 
     def __debug(self, msg):
 
@@ -32,8 +33,7 @@ class PeerConnection:
             if not msgType:
                 return (None, None)
 
-            strlen = self.sd.read(4)
-
+            strlen = self.sd.read(4)  # .encode('utf-8')
             msgLen = int(struct.unpack("!L", strlen)[0])
 
             msg = ""
